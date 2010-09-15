@@ -1,0 +1,19 @@
+propel:
+
+  group:
+    id: ~
+    label:          { type: varchar(50), required: true }
+    description:    { type: varchar(255) }
+    test:           { type: varchar(500) }
+    previous_test:  { type: varchar(500) }
+
+  item:
+    id: ~
+    label:          { type: varchar(50), required: true }
+    description:    { type: varchar(255) }
+    url:            { type: varchar(255) }
+    test:           { type: varchar(500) }
+    previous_test:  { type: varchar(500) }
+    _propel_behaviors:
+      nested_set: 
+

@@ -1,0 +1,15 @@
+body {
+	padding: 0;
+}
+
+#content,
+#menu {
+  padding: 1em;
+}
+#menu {
+	background: #333;
+	color: #888;
+}
+#menu a {
+	color: #CCC
+}

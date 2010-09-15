@@ -1,0 +1,26 @@
+generator:
+  class: sfPropelGenerator
+  param:
+    model_class:           Group
+    theme:                 admin15
+    non_verbose_templates: true
+    with_show:             false
+    singular:              Group
+    plural:                Groups
+    route_prefix:          group
+    with_propel_route:     1
+    actions_base_class:    sfActions
+
+    config:
+      actions: ~
+      fields: ~
+      list:
+        title: Groups
+        display: [=label]
+      filter:
+        display: [label, description, test]
+      form:    ~
+      edit:
+        title: Editing group "%%label%%"
+      new:
+        title: New group
