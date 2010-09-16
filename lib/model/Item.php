@@ -19,4 +19,9 @@
  */
 class Item extends BaseItem {
 
+  public function __toString ()
+  {
+    return $this->label;
+  }
+
 } // Item

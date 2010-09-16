@@ -4,16 +4,37 @@ propel:
     id: ~
     label:          { type: varchar(50), required: true }
     description:    { type: varchar(255) }
-    test:           { type: varchar(500) }
-    previous_test:  { type: varchar(500) }
+    test_container_id: ~
 
   item:
     id: ~
+    test_container_id: ~
     label:          { type: varchar(50), required: true }
     description:    { type: varchar(255) }
     url:            { type: varchar(255) }
-    test:           { type: varchar(500) }
-    previous_test:  { type: varchar(500) }
     _propel_behaviors:
       nested_set: 
 
+  test_attribute:
+    id: ~
+    test_container_id: ~
+    attribute:      { type: varchar(50) }
+    comparator:     { type: varchar(3)  } # =, !=, <, <=, >, >=, reg
+    value:          { type: varchar(50) }
+
+  test_membership:
+    id: ~
+    test_container_id: ~
+    group_id: ~
+
+  test_container:
+    id: ~
+    test_container_id: { type: integer }
+    type:           { type: varchar(3), default: 'AND' } # AND / OR / NAND / NOR
+    _foreignKeys:
+      parent_container:
+        foreignTable: test_container
+        phpName: ParentTestContainer
+        refPhpName: SubTestContainer
+        references:
+          - { local: test_container_id, foreign: id }

@@ -17,7 +17,7 @@ generator:
       list:
         title: Menu items
       filter:
-        display: [label, description, test]
+        display: [label, description, test_container_id]
       form:    ~
       edit:
         title: Editing menu "%%label%%"
