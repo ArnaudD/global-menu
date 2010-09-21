@@ -13,18 +13,16 @@ class GroupForm extends BaseGroupForm
   {
     $this->widgetSchema->setFormFormatterName('list');
     $this->widgetSchema['test_container_id'] = new sfWidgetFormInputHidden();
-    $this->embedForm ('test_container', new TestContainerForm($this->getObject()->getTestContainer()));
+
+    $test = $this->getObject()->getTestContainer();
+    if ($test === null)
+    {
+      $test = new TestContainer();
+      $this->getObject ()->setTestContainer($test);
+    }
+
+    $this->embedForm ('test_container', new TestContainerForm($test));
     $this->validatorSchema->setOption('allow_extra_fields', true);
     $this->validatorSchema->setOption('filter_extra_fields', false);
-  }
-
-  public function saveEmbeddedForms($con = null, $forms = null)
-  {
-    parent::saveEmbeddedForms($con, $forms);
-
-    $testForm = $this->embeddedForms['test_container'];
-    $this->getObject ()->setTestContainerId ($testForm->getObject () === null ?
-            null : $testForm->getObject()->getId());
-    $this->getObject ()->save();
   }
 }
