@@ -1,0 +1,21 @@
+generator:
+  class: sfPropelGenerator
+  param:
+    model_class:           TestContainer
+    theme:                 admin15
+    non_verbose_templates: true
+    with_show:             false
+    singular:              TestContainer
+    plural:                TestContainers
+    route_prefix:          test_container
+    with_propel_route:     1
+    actions_base_class:    sfActions
+
+    config:
+      actions: ~
+      fields:  ~
+      list:    ~
+      filter:  ~
+      form:    ~
+      edit:    ~
+      new:     ~

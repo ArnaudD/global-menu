@@ -1,3 +1,12 @@
+test_container:
+  class: sfPropel15RouteCollection
+  options:
+    model:                TestContainer
+    module:               test_container
+    prefix_path:          /test_container
+    column:               id
+    with_wildcard_routes: true
+
 item:
   class: sfPropel15RouteCollection
   options:
