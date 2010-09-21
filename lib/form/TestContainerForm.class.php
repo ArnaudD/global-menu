@@ -11,13 +11,13 @@ class TestContainerForm extends BaseTestContainerForm
 {
   public function configure()
   {
-    $this->widgetSchema->setFormFormatterName('list');
+    //$this->widgetSchema->setFormFormatterName('list');
 
     $this->widgetSchema['test_container_id'] = new sfWidgetFormInputHidden();
     $this->widgetSchema['type'] = new sfWidgetFormInputHidden();
 
 
-    $this->mergeRelation('TestAttribute');
+    $this->embedRelation('TestAttribute');
     //$this->embedRelation('TestMembership');
 
 //      $this->embedRelation('SubTestContainer');
@@ -28,6 +28,7 @@ class TestContainerForm extends BaseTestContainerForm
 
   public function saveEmbeddedForms($con = null, $forms = null)
   {
+    die('YOP');
     if (null === $forms)
     {
       $forms = $this->embeddedForms;
@@ -40,4 +41,5 @@ class TestContainerForm extends BaseTestContainerForm
 
     parent::saveEmbeddedForms($con, $forms);
   }
+
 }
