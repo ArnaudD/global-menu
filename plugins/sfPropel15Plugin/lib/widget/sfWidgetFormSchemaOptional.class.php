@@ -36,7 +36,8 @@ class sfWidgetFormSchemaOptional extends sfWidgetFormSchemaDecoratorEscaped
   
   protected function getDecorator($name)
   {
-    $strippedName = substr($name, strrpos($name, '[') + 1, strrpos($name, ']') - strrpos($name, '[') - 1);
+    $widgetName = substr($name, strrpos($name, '[') + 1, strrpos($name, ']') - strrpos($name, '[') - 1);
+    $strippedName = $this->generateId ($name);
     $decorator = $this->escape($this->decorator);
     $decorator = "
 <script type=\"text/javascript\">
@@ -46,7 +47,7 @@ function add{$strippedName}Widget()
   added{$strippedName} += 1;
   var content = \"{$decorator}\";
   var spanTag = document.createElement(\"span\");
-  spanTag.innerHTML = content.replace(/([_\[]){$strippedName}([_\]])/g, '\$1{$strippedName}' +  + added{$strippedName} + '\$2');
+  spanTag.innerHTML = content.replace(/([_\[]){$widgetName}([_\]])/g, '\$1{$widgetName}' +  + added{$strippedName} + '\$2');
   document.getElementById('add_{$strippedName}').appendChild(spanTag);
   document.getElementById('add_{$strippedName}').style.display='block';";
     if ($this->getOption('max_additions') > 0) {

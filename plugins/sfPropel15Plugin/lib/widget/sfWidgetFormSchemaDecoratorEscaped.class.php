@@ -44,10 +44,8 @@ class sfWidgetFormSchemaDecoratorEscaped extends sfWidgetFormSchemaDecorator
    */
   protected function escape($string)
   {
-    return str_replace(
-      array("\\"  , "\n"  , "\r" , "\""  , "'"  ),
-      array("\\\\", "\\n" , "\\r", "\\\"", "\\'"),
-      $string);
+    $string = json_encode($string);
+    return substr($string, 1, strlen($string) - 2); // remove first and last double quote
   }
   
   protected function getDecorator($name)
