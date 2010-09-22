@@ -119,7 +119,19 @@ abstract class sfFormPropel extends sfFormObject
   
   public function addOptionalForms($taintedValues = null)
   {
-    foreach ($this->optionalForms as $name => $form) {
+    foreach ($this->getEmbeddedForms() as $name => $form)
+    {
+      if ($form instanceof sfFormPropel)
+      {
+        $form->addOptionalForms($taintedValues[$name]);
+        // the parent form schema is not updated when updating an embedded form
+        // so we must embed it again
+        $this->embedForm($name, $form);
+      }
+    }
+
+    foreach ($this->optionalForms as $name => $form)
+    {
       $i = 1;
       if (strpos($name, '/') === false)
       {
