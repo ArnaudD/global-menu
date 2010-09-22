@@ -21,7 +21,5 @@ class TestAttributeForm extends BaseTestAttributeForm
         'reg' => 'regex',
       )
     ));
-    $this->validatorSchema->setOption('allow_extra_fields', true);
-    $this->validatorSchema->setOption('filter_extra_fields', false);
   }
 }
