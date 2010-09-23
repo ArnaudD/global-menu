@@ -113,24 +113,59 @@ abstract class sfFormPropel extends sfFormObject
    */
   public function bind(array $taintedValues = null, array $taintedFiles = null)
   {
-    $this->addOptionalForms($taintedValues);
+    $this->addOptionalFormsRecusively($taintedValues);
     return parent::bind($taintedValues, $taintedFiles);
   }
-  
-  public function addOptionalForms($taintedValues = null)
+
+  /**
+   * Recursive function to populate a form with the optional forms added by the user
+   *
+   * @param array  $taintedValues
+   * @param sfForm $form            Form to populate. self if null
+   *
+   * @return boolean true if one of the embedded form changed
+   */
+  public function addOptionalFormsRecusively($taintedValues = null, $form = null)
   {
-    foreach ($this->getEmbeddedForms() as $name => $form)
+    if ($form === null)
+      $form = $this;
+
+    $changed = false;
+
+    foreach ($form->getEmbeddedForms() as $name => $embeddedForm)
     {
-      if ($form instanceof sfFormPropel)
+      if (array_key_exists($name, $taintedValues) &&
+         $this->addOptionalFormsRecusively($taintedValues[$name], $embeddedForm))
       {
-        $form->addOptionalForms($taintedValues[$name]);
         // the parent form schema is not updated when updating an embedded form
         // so we must embed it again
-        $this->embedForm($name, $form);
+        $form->embedForm($name, $embeddedForm);
+        $changed = true;
       }
     }
 
-    foreach ($this->optionalForms as $name => $form)
+    if ($form instanceof sfFormPropel)
+      $changed |= $this->addOptionalForms ($taintedValues, $form);
+
+    return $changed;
+  }
+
+  /**
+   * Populate a form with the optional forms added by the user
+   *
+   * @param array  $taintedValues
+   * @param sfForm $form            Form to populate. self if null
+   *
+   * @return boolean true if one of the embedded form changed
+   */
+  public function addOptionalForms($taintedValues = null, $form = null)
+  {
+    if ($form === null)
+      $form = $this;
+    
+    $changed = false;
+
+    foreach ($form->getOptionalForms() as $name => $optionalForm)
     {
       $i = 1;
       if (strpos($name, '/') === false)
@@ -138,9 +173,10 @@ abstract class sfFormPropel extends sfFormObject
         // The form must be added to the main form
         while (array_key_exists($name . $i, $taintedValues))
         {
-          $this->embedForm($name . $i, clone $form);
-          $this->getWidgetSchema()->moveField($name . $i, sfWidgetFormSchema::BEFORE, $name);
+          $form->embedForm($name . $i, clone $optionalForm);
+          $form->getWidgetSchema()->moveField($name . $i, sfWidgetFormSchema::BEFORE, $name);
           $i++;
+          $changed = true;
         }
       }
       else
@@ -152,18 +188,51 @@ abstract class sfFormPropel extends sfFormObject
           continue;
         }
         $taintedValuesCopy = $taintedValues[$parent];
-        $target = $this->embeddedForms[$parent];
+        $target = $form->getEmbeddedForm($parent);
         while (array_key_exists($name . $i, $taintedValuesCopy))
         {
-          $target->embedForm($name . $i, clone $form);
+          $target->embedForm($name . $i, clone $optionalForm);
           $target->getWidgetSchema()->moveField($name . $i, sfWidgetFormSchema::BEFORE, $name);
           $i++;
           // the parent form schema is not updated when updating an embedded form
           // so we must embed it again
-          $this->embedForm($parent, $target);
+          $form->embedForm($parent, $target);
+          $changed = true;
         }
       }
     }
+
+    return $changed;
+  }
+
+
+  /**
+   * Gets the list of optional forms.
+   *
+   * @return array An array of Optional forms
+   */
+  public function getOptionalForms()
+  {
+    return $this->optionalForms;
+  }
+
+  /**
+   * Returns an Optional form.
+   *
+   * @param  string $name The name used to embed the form
+   *
+   * @return sfForm
+   *
+   * @throws InvalidArgumentException If there is no form Optional with the supplied name
+   */
+  public function getOptionalForm($name)
+  {
+    if (!isset($this->optionalForms[$name]))
+    {
+      throw new InvalidArgumentException(sprintf('There is no optional form "%s".', $name));
+    }
+
+    return $this->optionalForms[$name];
   }
 
   /**
